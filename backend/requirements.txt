@@ -4,4 +4,4 @@ pydantic
 python-dotenv
 anthropic
 google-genai
-sqlalchemy
+sqlalchemyedge-tts
