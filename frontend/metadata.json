@@ -1,0 +1,10 @@
+{
+  "name": "Remix Sukoon AI - Lotus Test 3",
+  "description": "Private AI-assisted support system offering a confidential, empathetic space to talk, share, and be heard.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
