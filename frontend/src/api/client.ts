@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://127.0.0.1:8001';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  'https://sukoon-ai-sih26093.onrender.com';
 
 export async function createSession(): Promise<number> {
   const response = await fetch(`${API_BASE_URL}/sessions`, {
