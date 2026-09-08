@@ -6,3 +6,4 @@ anthropic
 google-genai
 sqlalchemy
 edge-tts
+imageio-ffmpeg
