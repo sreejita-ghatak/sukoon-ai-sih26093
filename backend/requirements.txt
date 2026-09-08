@@ -8,3 +8,4 @@ sqlalchemy
 edge-tts
 imageio-ffmpeg
 librosa
+faster-whisper
