@@ -4,11 +4,20 @@ import tempfile
 from faster_whisper import WhisperModel
 
 
-_model = WhisperModel(
-    "small",
-    device="cpu",
-    compute_type="int8",
-)
+_model = None
+
+
+def get_whisper_model():
+    global _model
+
+    if _model is None:
+        _model = WhisperModel(
+            "small",
+            device="cpu",
+            compute_type="int8",
+        )
+
+    return _model
 
 
 def transcribe_with_whisper(
@@ -26,7 +35,9 @@ def transcribe_with_whisper(
             temp_file.write(audio_bytes)
             temp_path = temp_file.name
 
-        segments, _ = _model.transcribe(
+        model = get_whisper_model()
+
+        segments, _ = model.transcribe(
             temp_path,
             beam_size=5,
         )
