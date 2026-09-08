@@ -5,7 +5,7 @@ import { useOperator } from '../OperatorContext';
 const DEMO_OTP = '246810';
 
 export const OperatorLoginPage: React.FC = () => {
-  const { login } = useOperator();
+  const { login, navigate } = useOperator();
   const [step, setStep] = useState<'credentials' | '2fa'>('credentials');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,27 +40,40 @@ export const OperatorLoginPage: React.FC = () => {
     }
   }, [step]);
 
-  const handleCredentialsSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    if (!email.trim()) {
-      setError('Please provide an Operator ID or authorized email.');
-      return;
-    }
-    if (!password) {
-      setError('Please provide your operator authentication credential.');
+  const handleCredentialsSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError(null);
+
+  if (!email.trim()) {
+    setError('Please provide an Operator ID or authorized email.');
+    return;
+  }
+
+  if (!password) {
+    setError('Please provide your operator authentication credential.');
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const success = await login(email, password);
+
+    if (!success) {
+      setError('Invalid operator ID or password.');
       return;
     }
 
-    setIsLoading(true);
-    // Simulating frontend progression to 2FA verification step
-    setTimeout(() => {
-      setIsLoading(false);
-      setStep('2fa');
-      setResendCooldown(45);
-      setCanResend(false);
-    }, 350);
-  };
+    setStep('2fa');
+    setResendCooldown(45);
+    setCanResend(false);
+  } catch (error) {
+    console.error('Operator authentication failed:', error);
+    setError('Unable to connect to the authentication service.');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) {
@@ -112,7 +125,7 @@ export const OperatorLoginPage: React.FC = () => {
     }
   };
 
-  const handle2FASubmit = async (e: React.FormEvent) => {
+  const handle2FASubmit = (e: React.FormEvent) => {
   e.preventDefault();
   setError(null);
 
@@ -128,24 +141,8 @@ export const OperatorLoginPage: React.FC = () => {
     return;
   }
 
-  setIsLoading(true);
-
-  try {
-    const success = await login(email, password);
-
-    if (!success) {
-      setError('Invalid operator ID or password.');
-      setStep('credentials');
-      setOtp(['', '', '', '', '', '']);
-    }
-  } catch (error) {
-    console.error('Operator authentication failed:', error);
-    setError('Unable to connect to the authentication service.');
-  } finally {
-    setIsLoading(false);
-  }
+  navigate('/operator/dashboard');
 };
-
   const handleResendCode = () => {
     if (!canResend) return;
     setCanResend(false);
@@ -154,7 +151,7 @@ export const OperatorLoginPage: React.FC = () => {
   };
 
   const handleQuickDemoFill = () => {
-    setEmail('leo@gmail.com');
+    setEmail('leo');
     setPassword('');
     setError(null);
   };
