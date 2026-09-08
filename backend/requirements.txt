@@ -9,3 +9,4 @@ edge-tts
 imageio-ffmpeg
 librosa
 faster-whisper
+python-multipart
